@@ -1,0 +1,13 @@
+new
+snapshotDirectory /home/ec2-user/tmp_output/DENOVO_EXAMPLE_L1_01_26_21/denovo_Pdisc0_PclipTE0_Pclip0_Minclip0_MinDisc0/11234
+genome hg38
+maxPanelHeight 3000
+load /home/ec2-user/output/sessions/11234.xml
+squish
+goto chr1:120063323-120064223
+squish
+snapshot
+goto chr21:13002208-13003108
+squish
+snapshot
+
