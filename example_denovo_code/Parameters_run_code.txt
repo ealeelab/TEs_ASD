@@ -1,0 +1,51 @@
+FAMILY="L1"
+### Parameters ###
+# Write local path for files here
+PATH_LOCAL_FILES=""
+# Write path with calls here:
+XTEA_CALLS_PATH=""
+
+INPUT_FILE="${PATH_LOCAL_FILES}/input_files/Example_input.txt"	
+
+BASENAME=$(basename $INPUT_FILE)
+# allowed repeat-anchored mate (RAM) reads or discordant reads in parents in region
+PARENTAL_RAM="0"
+# allowed TE mapping clipped reads in parents in region
+PARENTAL_CLIP_TE="0"
+# allowed clipped reads in parents in region
+PARENTAL_CLIP_ALL="0"
+# number of clipped reads minimum in call (using xtea threshold in this case)
+MIN_CLIP="0"
+# number of number of ram/discordant reads minimum in call (using xtea threshold in this case)
+MIN_RAM="0"
+RUN_NAME="DENOVO_EXAMPLE"
+DATE=`date "+%m_%d_%y"`
+# Directory with xTea insertions for each TE_TYPE
+CALLSDIR="${XTEA_CALLS_PATH}/${FAMILY}"
+RSCRIPTS_DIR="${PATH_LOCAL_FILES}/input_files/"
+
+OUTDIR="${PATH_LOCAL_FILES}/${RUN_NAME}_${FAMILY}_${DATE}/denovo_Pdisc${PARENTAL_RAM}_PclipTE${PARENTAL_CLIP_TE}_Pclip${PARENTAL_CLIP_ALL}_Minclip${MIN_CLIP}_MinDisc${MIN_RAM}"
+# Where IGV snpashots will be saved on cloud
+SNAPSHOT_DIR="/home/ec2-user/tmp_output/${RUN_NAME}_${FAMILY}_${DATE}/denovo_Pdisc${PARENTAL_RAM}_PclipTE${PARENTAL_CLIP_TE}_Pclip${PARENTAL_CLIP_ALL}_Minclip${MIN_CLIP}_MinDisc${MIN_RAM}"
+# KNRs for filtering per TE Type
+REF_KNR_DIR="${PATH_LOCAL_FILES}/input_files/ReferenceYoung_KNR_1000G_SSCParents_${FAMILY}.hg38.bed"
+# IGV sessions paths
+SESSIONS_DIR="/home/ec2-user/output/sessions"
+# Repeatmasker reference insertions per TE Type
+REF_ALL_DIR="${PATH_LOCAL_FILES}/input_files/hg38.fa.out.${FAMILY}.chr.bed"
+# refseq gene annotation file
+GENE_ANNOT_PATH="${PATH_LOCAL_FILES}/input_files/hg38_refseq_geneannot_sort.txt"
+# sfari gene annotation file
+SFARI_ANNOT_PATH="${PATH_LOCAL_FILES}/input_files/SFARI_genes_hg38.bed"
+SFARI_SCORES_PATH="${PATH_LOCAL_FILES}/input_files/SFARI_Gene_score.txt"
+PLI_ANNOT_PATH="${PATH_LOCAL_FILES}/input_files/pLI.txt"
+
+#############################
+mkdir -p ${PATH_LOCAL_FILES}/${RUN_NAME}_${FAMILY}_${DATE}
+mkdir -p  ${PATH_LOCAL_FILES}/${RUN_NAME}_${FAMILY}_${DATE}/igv
+mkdir -p ${PATH_LOCAL_FILES}/${RUN_NAME}_${FAMILY}_${DATE}/logs
+
+mkdir -p $OUTDIR
+
+sbatch -J dn_${BASENAME}_${FAMILY}_${DATE} --export INPUT_FILE="$INPUT_FILE",OUTDIR="$OUTDIR",RSCRIPTS_DIR="$RSCRIPTS_DIR",SNAPSHOT_DIR="$SNAPSHOT_DIR",PARENTAL_RAM="$PARENTAL_RAM",PARENTAL_CLIP_TE="$PARENTAL_CLIP_TE",PARENTAL_CLIP_ALL="$PARENTAL_CLIP_ALL",CALLSDIR="$CALLSDIR",MIN_CLIP="$MIN_CLIP",MIN_RAM="$MIN_RAM",REF_KNR_DIR="$REF_KNR_DIR",SESSIONS_DIR="$SESSIONS_DIR",REF_ALL_DIR="$REF_ALL_DIR",GENE_ANNOT_PATH="$GENE_ANNOT_PATH",SFARI_ANNOT_PATH="$SFARI_ANNOT_PATH",PLI_ANNOT_PATH="$PLI_ANNOT_PATH",SFARI_SCORES_PATH="$SFARI_SCORES_PATH" -o ${PATH_LOCAL_FILES}/${RUN_NAME}_${FAMILY}_${DATE}/logs/denovo_Pdisc${PARENTAL_RAM}_PclipTE${PARENTAL_CLIP_TE}_Pclip${PARENTAL_CLIP_ALL}_Minclip${MIN_CLIP}_MinDisc${MIN_RAM}_${DATE}_${RUN_NAME}_${FAMILY}_%A_%a.out -e ${PATH_LOCAL_FILES}/${RUN_NAME}_${FAMILY}_${DATE}/logs/denovo_Pdisc${PARENTAL_RAM}_PclipTE${PARENTAL_CLIP_TE}_Pclip${PARENTAL_CLIP_ALL}_Minclip${MIN_CLIP}_MinDisc${MIN_RAM}_${DATE}_${RUN_NAME}_${FAMILY}_%A_%a.err ${PATH_LOCAL_FILES}/example_denovo_code/run_denovo_TE_trio_pipeline.sh
+
